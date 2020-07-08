@@ -18,7 +18,7 @@ Set to true to hold values on post back and to use multiple tables on same page.
 
 EditMode:
 Dynamically set to true if dynamically adding rows. This will remove the paging button and dropdownlist.
-Intended for an <EditTemplate> inside an <asp:GridView>
+Intended for an EditTemplate inside an asp:GridView
   
 Dependencies:
 JQuery 3.5.1 or higher 
