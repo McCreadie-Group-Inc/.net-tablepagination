@@ -1,12 +1,19 @@
 ﻿(function ($) {
+
+    var settings;
+
     const skip5TextContent = ">>|";
     const back5TextContent = "|<<";
     const nextTextContent = ">>";
     const backTextConent = "<<";
-    var settings;
+
+    const ddlValuesDefault = [5, 10, 15, 25]; //default if no options passed;
+    var ddlValues;
+
     //used for offline version of plugin
     var ddlCookieHold;
     var pageCookieHold;
+
     $.extend({
         tablePagination: new
             function () {
@@ -245,11 +252,11 @@
                 }
                 function addPagination(table, startValue) {
                     let tableRows = table[0].tBodies[0].rows.length;
-                    if (tableRows > 5) {
+                    if (tableRows > ddlValues[0]) {
                         let tableID = table[0].id;
                         let ddlCookie = parseInt(getCookie('rowsToShow_' + tableID + '_ddlCookie'));
                         let lastValue = Math.floor((tableRows - 1 + ddlCookie) / ddlCookie);
-                        $('<ul id="' + tableID + '_ulPagination" class="pagination"></ul >').appendTo('#div_' + tableID);
+                        $('<ul id="' + tableID + '_ulPagination" class="pagination ml-1"></ul >').appendTo('#div_' + tableID);
                         let ulPagination = $('#' + tableID + '_ulPagination');
                         ulPagination.append('<li class="page-item paginationLink_' + tableID + '" value="1" id="first_' + tableID + '"><a style="cursor:pointer;" class="page-link" >First</a></li>');
                         ulPagination.append('<li class="page-item paginationLink_' + tableID + '" value="back5" id="-5_' + tableID + '"><a style="cursor:pointer;" class="page-link" >' + back5TextContent + '</a></li>');
@@ -300,6 +307,7 @@
                 this.construct = function (options) {
                     return this.each(function () {
                         settings = options !== undefined ? options : {};
+                        ddlValues = settings.ddlValues !== undefined ? settings.ddlValues : ddlValuesDefault;
                         var $this = $(this);
                         let tableID = $this[0].id;
                         let ddlCookieName = 'rowsToShow_' + tableID + '_ddlCookie';
@@ -315,17 +323,21 @@
                             pageCookieValue = parseInt(pageCookie);
                         }
                         if (ddlCookie === '' || ddlCookie === undefined) {
-                            setCookie(ddlCookieName, 5);
+                            setCookie(ddlCookieName, ddlValues[0]);
                             ddlCookie = getCookie(ddlCookieName);
                             ddlCookieValue = parseInt(ddlCookie);
                         }
 
-                        if (tableRows > 5) {
+                        if (tableRows > ddlValues[0]) {
                             if (settings.EditMode !== true) {
-                                $('<div class="form-row" id="div_' + tableID + '">').insertAfter('#' + tableID);
+                                $('<div class="form-row mt-1" id="div_' + tableID + '">').insertAfter('#' + tableID);
                                 addPagination($this, pageCookieValue);
-                                $('<select style="cursor:pointer;" class="form-control col-1 paginationDDL_' + tableID + '" id="ddlRowsToShow' + tableID + '">' +
-                                    '<option value="5">5 Rows</option ><option value="10">10 Rows</option><option value="15">15 Rows</option><option value="25">25 Rows</option><option value="0">Show All</option>' +
+                                let options;
+                                ddlValues.forEach(function (v) {
+                                    options += '<option value="' + v + '">' + v + ' Rows</option >'
+                                });
+                                debugger;
+                                $('<select style="cursor:pointer;" class="form-control col-1 paginationDDL_' + tableID + '" id="ddlRowsToShow' + tableID + '">' + options + '<option value="0">Show All</option>' +
                                     '</select>').insertBefore('#' + tableID + '_ulPagination');
                                 document.getElementById('ddlRowsToShow' + tableID).value = ddlCookie;
                                 $('</div>').insertAfter('#' + tableID);
