@@ -1,6 +1,6 @@
 ﻿(function ($) {
 
-    var settings;
+    var tablepagintationSettings;
 
     const skip5TextContent = ">>|";
     const back5TextContent = "|<<";
@@ -18,7 +18,7 @@
         tablePagination: new
             function () {
                 function setCookie(cname, cvalue) {
-                    if (settings.useCookeies === true) {
+                    if (tablepagintationSettings.useCookies === true) {
                         var d = new Date();
                         d.setTime(d.getTime() + 20 * 60 * 1000); //first value: set for minutes to hold cookie
                         var expires = "expires=" + d.toUTCString();
@@ -39,7 +39,7 @@
                     }
                 }
                 function getCookie(cname) {
-                    if (settings.useCookeies === true) {
+                    if (tablepagintationSettings.useCookies === true) {
                         var name = cname + "=";
                         var ca = document.cookie.split(';');
                         for (var i = 0; i < ca.length; i++) {
@@ -306,8 +306,8 @@
                 }
                 this.construct = function (options) {
                     return this.each(function () {
-                        settings = options !== undefined ? options : {};
-                        ddlValues = settings.ddlValues !== undefined ? settings.ddlValues : ddlValuesDefault;
+                        tablepagintationSettings = options !== undefined ? options : {};
+                        ddlValues = tablepagintationSettings.ddlValues !== undefined ? tablepagintationSettings.ddlValues : ddlValuesDefault;
                         var $this = $(this);
                         let tableID = $this[0].id;
                         let ddlCookieName = 'rowsToShow_' + tableID + '_ddlCookie';
@@ -327,9 +327,8 @@
                             ddlCookie = getCookie(ddlCookieName);
                             ddlCookieValue = parseInt(ddlCookie);
                         }
-
                         if (tableRows > ddlValues[0]) {
-                            if (settings.EditMode !== true) {
+                            if (tablepagintationSettings.editMode !== true) {
                                 $('<div class="form-row mt-1" id="div_' + tableID + '">').insertAfter('#' + tableID);
                                 addPagination($this, pageCookieValue);
                                 let options;
@@ -345,7 +344,7 @@
                             }
                             if (ddlCookieValue > 0) {
                                 for (let r = 0; r < tableRows; r++) {
-                                    if (r < (pageCookieValue * ddlCookieValue) + (settings.EditMode !== undefined && settings.EditMode === true ? 1 : 0) && (pageCookieValue - 1) * ddlCookieValue <= r) {
+                                    if (r < (pageCookieValue * ddlCookieValue) + (tablepagintationSettings.editMode !== undefined && tablepagintationSettings.editMode === true ? 1 : 0) && (pageCookieValue - 1) * ddlCookieValue <= r) {
                                         $this[0].tBodies[0].rows[r].style.display = '';
                                     } else {
                                         $this[0].tBodies[0].rows[r].style.display = 'none';
@@ -385,7 +384,7 @@
                                     }
                                 }
                             );
-                            if (settings.EditMode !== true) { activeIndexCheck($this, pageCookieValue); }
+                            if (tablepagintationSettings.editMode !== true) { activeIndexCheck($this, pageCookieValue); }
                         }
                     });
                 };
